@@ -1,0 +1,73 @@
+{
+	"comment": "",
+	"ignore": "test windows",
+	"package": [
+		{
+			"checksumSHA1": "Ua3JmCwAcwUyk4omsY1RKd8rI2A=",
+			"path": "github.com/Sirupsen/logrus",
+			"revision": "081307d9bc1364753142d5962fc1d795c742baaf",
+			"revisionTime": "2016-04-16T08:21:37Z"
+		},
+		{
+			"checksumSHA1": "7tvyONViTN7mFX376eSfjvzcSGI=",
+			"path": "github.com/docker/go-connections/sockets",
+			"revision": "eb315e36415380e7c2fdee175262560ff42359da",
+			"revisionTime": "2017-01-01T21:01:28Z"
+		},
+		{
+			"checksumSHA1": "mD7trKvl3KiylGzyl0N6rdjb2hA=",
+			"path": "github.com/docker/go-plugins-helpers/ipam",
+			"revision": "06ddb7feab849695a3202f0f629015a1f1bb8eac",
+			"revisionTime": "2017-01-06T05:13:31Z"
+		},
+		{
+			"checksumSHA1": "s5E0+YRGqaGwtsWweEGS0Bvdn6Q=",
+			"path": "github.com/docker/go-plugins-helpers/network",
+			"revision": "06ddb7feab849695a3202f0f629015a1f1bb8eac",
+			"revisionTime": "2017-01-06T05:13:31Z"
+		},
+		{
+			"checksumSHA1": "xIsCMccvRcXR41LWbO24J8YZlrE=",
+			"path": "github.com/docker/go-plugins-helpers/sdk",
+			"revision": "06ddb7feab849695a3202f0f629015a1f1bb8eac",
+			"revisionTime": "2017-01-06T05:13:31Z"
+		},
+		{
+			"checksumSHA1": "zWcD+hiuLdxgBd4oRQnAsdNBXSc=",
+			"path": "github.com/urfave/cli",
+			"revision": "d53eb991652b1d438abdd34ce4bfa3ef1539108e",
+			"revisionTime": "2016-09-17T21:38:06Z"
+		},
+		{
+			"checksumSHA1": "KCa4eAjX4czkufvK/ll9IGbowLQ=",
+			"path": "github.com/vishvananda/netlink",
+			"revision": "c750a61f1836d48aacb1c74deafb05cfb549eb92",
+			"revisionTime": "2016-12-14T02:04:10Z"
+		},
+		{
+			"checksumSHA1": "gJ0+FLGRvDtMdUCMAYzWjJ4NTzA=",
+			"path": "github.com/vishvananda/netlink/nl",
+			"revision": "c750a61f1836d48aacb1c74deafb05cfb549eb92",
+			"revisionTime": "2016-12-14T02:04:10Z"
+		},
+		{
+			"checksumSHA1": "zjfUA3qOv6grhBLpyJ+7EejXWQE=",
+			"path": "github.com/vishvananda/netns",
+			"revision": "8ba1072b58e0c2a240eb5f6120165c7776c3e7b8",
+			"revisionTime": "2016-04-30T05:37:23Z"
+		},
+		{
+			"checksumSHA1": "LvdVRE0FqdR68SvVpRkHs1rxhcA=",
+			"path": "golang.org/x/net/proxy",
+			"revision": "55a3084c9119aeb9ba2437d595b0a7e9cb635da9",
+			"revisionTime": "2016-11-04T22:18:50Z"
+		},
+		{
+			"checksumSHA1": "JMwkJpWOXuDU8GPKhzvfoTAZGjU=",
+			"path": "golang.org/x/sys/unix",
+			"revision": "354f231ae1a9ca2d3a6a1a7c5d40b1213d761675",
+			"revisionTime": "2015-10-08T20:13:40Z"
+		}
+	],
+	"rootPath": "github.com/nicescale/qingcloud-docker-network"
+}
