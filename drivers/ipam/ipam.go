@@ -68,6 +68,12 @@ func (d *driver) RequestAddress(req *ipam.RequestAddressRequest) (*ipam.RequestA
 		return nil, err
 	}
 
+	links, err := util.LinkList()
+	if err != nil {
+		return nil, err
+	}
+	util.NicStore.Add(nic.PrivateIP.String(), links[nic.ID])
+
 	return &ipam.RequestAddressResponse{
 		Address: nic.PrivateIP.String() + "/24",
 	}, nil

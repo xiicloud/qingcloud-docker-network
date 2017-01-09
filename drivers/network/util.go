@@ -7,6 +7,7 @@ import (
 	"net/http"
 	"os"
 	"path/filepath"
+	"strings"
 	"time"
 
 	"github.com/nicescale/qingcloud-docker-network/util"
@@ -106,69 +107,22 @@ func (d *driver) getNetwork(nid string) *netConfig {
 	return d.networks[nid]
 }
 
-// TODO: if this failed, call DescribeNics API to pick an idle NIC
 func (d *driver) findAvailableNic(epid, vxnet, ip string) (*endpoint, error) {
-	md, err := util.GetInstanceMetedata()
-	if err != nil {
-		return nil, err
-	}
-
-	m, err := util.LinkList()
-	if err != nil {
-		return nil, err
-	}
-
-	var preferedNic *util.VxnetNic
-	d.mu.Lock()
-	for _, nic := range md.Vxnets {
-		if nic.Role == 1 {
-			// Role == 1 means the interface is used by the VM
-			continue
-		}
-		if nic.VxnetID != vxnet || m[nic.NicID] == nil {
-			continue
-		}
-		if d.lockedNics[nic.NicID] {
-			continue
-		}
-
-		if util.IPEquals(ip, nic.PrivateIP.String()) {
-			preferedNic = nic
-			break
-		}
-	}
-
-	if preferedNic == nil {
-		d.mu.Unlock()
+	link := util.NicStore.Delete(strings.Split(ip, "/")[0])
+	if link == nil {
 		return nil, errNoAvailableNic
 	}
-	d.lockedNics[preferedNic.NicID] = true
-	d.mu.Unlock()
-	defer d.unlockNic(preferedNic.NicID)
-
 	nicName := genNicName(epid)
-	if err = util.RenameLink(m[preferedNic.NicID], nicName); err != nil {
+	if err := util.RenameLink(link, nicName); err != nil {
 		return nil, err
 	}
 
 	ep := &endpoint{
 		ID:    epid,
-		NicID: preferedNic.NicID,
+		NicID: link.Attrs().HardwareAddr.String(),
 		IP:    ip,
 	}
 	return ep, nil
-}
-
-func (d *driver) lockNic(id string) {
-	d.mu.Lock()
-	d.lockedNics[id] = true
-	d.mu.Unlock()
-}
-
-func (d *driver) unlockNic(id string) {
-	d.mu.Lock()
-	delete(d.lockedNics, id)
-	d.mu.Unlock()
 }
 
 func (d *driver) saveEndpoint(nid string, ep *endpoint) error {

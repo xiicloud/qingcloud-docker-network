@@ -108,16 +108,6 @@ func LinkList() (map[string]netlink.Link, error) {
 	return m, nil
 }
 
-// ip1 is a CIDR format IP, ip2 is a pure IPV4 ip
-func IPEquals(ip1, ip2 string) bool {
-	ip, _, err := net.ParseCIDR(ip1)
-	if err != nil {
-		return false
-	}
-
-	return ip.String() == ip2
-}
-
 func RenameLink(link netlink.Link, name string) error {
 	if err := NlHandle.LinkSetDown(link); err != nil {
 		return err
