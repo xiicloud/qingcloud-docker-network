@@ -173,15 +173,21 @@ func (d *driver) DeleteEndpoint(req *network.DeleteEndpointRequest) error {
 		return fmt.Errorf("endpoint %s is used by another container", ep.ID)
 	}
 
-	md, err := util.GetInstanceMetedata()
+	links, err := util.LinkList()
 	if err != nil {
-		return err
-	}
-
-	// -1 means exclude the main nic of the VM
-	if len(md.Vxnets)-1 > maxIdleNicsPerInstance {
-		if jobID, err := d.api.DetachNics([]string{ep.NicID}, false); err != nil {
-			logrus.Errorf("failed to detach nic %s. job_id: %s, err: %v", ep.NicID, jobID, err)
+		logrus.Errorf("Failed to get link list in DeleteEndpoint: %v", err)
+	} else {
+		for mac, l := range links {
+			if l.Type() != "device" || l.Attrs().Name == "lo" {
+				delete(links, mac)
+				continue
+			}
+		}
+		// -1 means exclude the main nic of the VM
+		if len(links)-1 > maxIdleNicsPerInstance {
+			if jobID, err := d.api.DetachNics([]string{ep.NicID}, false); err != nil {
+				logrus.Errorf("failed to detach nic %s. job_id: %s, err: %v", ep.NicID, jobID, err)
+			}
 		}
 	}
 
