@@ -2,7 +2,7 @@
 1. 登录青云控制台，创建一个VPC网络，然后创建两个私有网络(分别命名为mgmt和user)，并将之加入VPC网络。
 2. 基于CentOS 7 64位镜像创建虚拟机，网络选择mgmt。
 3. 登录虚拟机，执行 yum remove -y NetworkManager 删除NetworkManger，否则机器上绑定多个网卡时会污染默认路由导致虚拟机无法登录。
-4. 执行 `echo "/sbin/dhclient eth0 >>/etc/rc.local"`，确保虚拟机启动时，管理网络能够通过DHCP进行配置。
+4. 执行 `echo "/sbin/dhclient eth0" >>/etc/rc.local && chmod +x /etc/rc.local`，确保虚拟机启动时，管理网络能够通过DHCP进行配置。
 5. 执行 `curl https://get.docker.com|bash` 安装Docker
 6. 安装并启动青云Docker插件:
 
