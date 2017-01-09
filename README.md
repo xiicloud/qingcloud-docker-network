@@ -6,12 +6,22 @@
 5. 执行 `curl https://get.docker.com|bash` 安装Docker
 6. 安装并启动青云Docker插件:
 
+  从源码编译
+  
   ```bash
   git clone https://github.com/nicescale/qingcloud-docker-network.git /tmp/qingcloud-docker-network
   cd /tmp/qingcloud-docker-network
   go build -o /usr/bin/qingcloud-docker-network
-  export ACCESS_KEY_ID=xxxxxxxx SECRET_KEY=xxxxxxxxxx ZONE=sh1a
-  /usr/bin/qingcloud-docker-network
+  ```
+  
+  或者直接下载编译好的二进制使用：[qingcloud-docker-network.gz](https://github.com/nicescale/qingcloud-docker-network/files/693076/qingcloud-docker-network.gz)
+  
+  sha1: 3f826f9c5ff13a76bdde11ad08fe5c338dc49ee7
+  
+  启动：
+  
+  ```bash
+  ACCESS_KEY_ID=xxxxxxxx SECRET_KEY=xxxxxxxxxx ZONE=sh1a /usr/bin/qingcloud-docker-network
   ```
 7. 创建网络:
 
