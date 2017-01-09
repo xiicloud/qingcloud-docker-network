@@ -91,6 +91,11 @@ func GetInstanceMetedata() (*InstanceMetadata, error) {
 	}
 	defer resp.Body.Close()
 
+	if resp.StatusCode != 200 {
+		body, _ := ioutil.ReadAll(resp.Body)
+		return nil, fmt.Errorf("failed to call qingcloud metadata API %s: %q", inspectURL, string(body))
+	}
+
 	md := &InstanceMetadata{}
 	err = json.NewDecoder(resp.Body).Decode(md)
 	return md, err
