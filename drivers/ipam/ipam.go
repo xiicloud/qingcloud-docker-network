@@ -114,7 +114,6 @@ func (d *driver) findOrCreateNic(vxnet string) (*sdktypes.Nic, error) {
 	return nics[0], nil
 }
 
-// TODO: if this failed, call DescribeNics API to pick an idle NIC
 func (d *driver) findAttachedIdleNic(vxnet string) (*sdktypes.Nic, error) {
 	md, err := util.GetInstanceMetedata()
 	if err != nil {
