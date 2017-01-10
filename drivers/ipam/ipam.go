@@ -63,7 +63,7 @@ func (d *driver) RequestAddress(req *ipam.RequestAddressRequest) (*ipam.RequestA
 		}, nil
 	}
 
-	nic, err := d.findOrCreateNic(req.PoolID)
+	nic, err := d.findOrCreateNic(req.PoolID, req.Address)
 	if err != nil {
 		return nil, err
 	}
@@ -84,27 +84,25 @@ func (d *driver) ReleaseAddress(req *ipam.ReleaseAddressRequest) error {
 	return nil
 }
 
-func (d *driver) findOrCreateNic(vxnet string) (*sdktypes.Nic, error) {
-	if nic, err := d.findAttachedIdleNic(vxnet); err == nil {
+func (d *driver) findOrCreateNic(vxnet, ip string) (*sdktypes.Nic, error) {
+	nic, err := d.findAttachedIdleNic(vxnet, ip)
+	if err == nil {
 		return nic, nil
 	}
 
-	nics, err := d.api.DescribeNics(qcsdk.Params{"status": "available", "vxnets": vxnet})
-	if err != nil {
-		return nil, err
+	var ips []string
+	if ip == "" {
+		nic, err = d.findRandomAvailableNic(vxnet)
+	} else {
+		nic, err = d.findAvailableNicByIP(vxnet, ip)
+		ips = append(ips, ip)
 	}
-
-	if len(nics) > 0 {
-		rand.Seed(time.Now().UnixNano())
-		nic := nics[rand.Intn(len(nics))]
-		if _, err := d.api.AttachNics([]string{nic.ID}, util.InstanceID, true); err != nil {
-			return nil, err
-		}
-		return nic, nil
+	if err == nil || err != errNoAvailableNic {
+		return nic, err
 	}
 
 	// Create a network interface and attach it to the instance.
-	nics, err = d.api.CreateNics(vxnet, "", 1, nil)
+	nics, err := d.api.CreateNics(vxnet, "", 1, ips)
 	if err != nil {
 		return nil, err
 	}
@@ -114,7 +112,7 @@ func (d *driver) findOrCreateNic(vxnet string) (*sdktypes.Nic, error) {
 	return nics[0], nil
 }
 
-func (d *driver) findAttachedIdleNic(vxnet string) (*sdktypes.Nic, error) {
+func (d *driver) findAttachedIdleNic(vxnet, ip string) (*sdktypes.Nic, error) {
 	md, err := util.GetInstanceMetedata()
 	if err != nil {
 		return nil, err
@@ -136,6 +134,9 @@ func (d *driver) findAttachedIdleNic(vxnet string) (*sdktypes.Nic, error) {
 		if nic.VxnetID != vxnet || m[nic.NicID] == nil {
 			continue
 		}
+		if ip != "" && nic.PrivateIP.String() != ip {
+			continue
+		}
 
 		preferedNic = nic
 		break
@@ -148,4 +149,49 @@ func (d *driver) findAttachedIdleNic(vxnet string) (*sdktypes.Nic, error) {
 		ID:        preferedNic.NicID,
 		PrivateIP: preferedNic.PrivateIP,
 	}, nil
+}
+
+func (d *driver) findRandomAvailableNic(vxnet string) (*sdktypes.Nic, error) {
+	nics, err := d.api.DescribeNics(qcsdk.Params{"status": "available", "vxnets": vxnet})
+	if err != nil {
+		return nil, err
+	}
+
+	if len(nics) == 0 {
+		return nil, errNoAvailableNic
+	}
+
+	rand.Seed(time.Now().UnixNano())
+	nic := nics[rand.Intn(len(nics))]
+	if _, err := d.api.AttachNics([]string{nic.ID}, util.InstanceID, true); err != nil {
+		return nil, err
+	}
+	return nic, nil
+}
+
+func (d *driver) findAvailableNicByIP(vxnet, ip string) (*sdktypes.Nic, error) {
+	offset := 0
+	limit := 100
+	for {
+		nics, err := d.api.DescribeNics(qcsdk.Params{
+			"status": "available",
+			"vxnets": vxnet,
+			"offset": fmt.Sprint(offset),
+			"limit":  fmt.Sprint(limit)})
+		if err != nil {
+			return nil, err
+		}
+		if len(nics) == 0 {
+			return nil, errNoAvailableNic
+		}
+
+		for _, nic := range nics {
+			if nic.PrivateIP.String() == ip {
+				return nic, nil
+			}
+		}
+		offset += limit
+	}
+
+	return nil, errNoAvailableNic
 }
