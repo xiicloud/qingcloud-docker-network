@@ -174,27 +174,21 @@ func (d *driver) findRandomAvailableNic(vxnet string) (*sdktypes.Nic, error) {
 }
 
 func (d *driver) findAvailableNicByIP(vxnet, ip string) (*sdktypes.Nic, error) {
-	offset := 0
-	limit := 100
-	for {
-		nics, err := d.api.DescribeNics(qcsdk.Params{
-			"status": "available",
-			"vxnets": vxnet,
-			"offset": fmt.Sprint(offset),
-			"limit":  fmt.Sprint(limit)})
-		if err != nil {
-			return nil, err
-		}
-		if len(nics) == 0 {
-			return nil, errNoAvailableNic
-		}
+	nics, err := d.api.DescribeNics(qcsdk.Params{
+		"status":      "available",
+		"search_word": ip,
+		"vxnets":      vxnet})
+	if err != nil {
+		return nil, err
+	}
+	if len(nics) == 0 {
+		return nil, errNoAvailableNic
+	}
 
-		for _, nic := range nics {
-			if nic.PrivateIP.String() == ip {
-				return nic, nil
-			}
+	for _, nic := range nics {
+		if nic.PrivateIP.String() == ip {
+			return nic, nil
 		}
-		offset += limit
 	}
 
 	return nil, errNoAvailableNic
