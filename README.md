@@ -25,7 +25,7 @@
 5. 执行 `curl https://get.docker.com|bash` 安装Docker
 6. 安装并启动青云Docker插件:
 
-  从源码编译
+  从源码编译安装（依赖于Docker 1.9以上环境）：
   
   ```bash
   git clone https://github.com/nicescale/qingcloud-docker-network.git /tmp/qingcloud-docker-network
@@ -33,10 +33,6 @@
   make
   cp bin/qingcloud-docker-network /bin/
   ```
-  
-  或者直接下载编译好的二进制使用：[qingcloud-docker-network.gz](https://github.com/nicescale/qingcloud-docker-network/files/693076/qingcloud-docker-network.gz)
-  
-  sha1: 3f826f9c5ff13a76bdde11ad08fe5c338dc49ee7
   
   启动：
   
