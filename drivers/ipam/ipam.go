@@ -97,19 +97,23 @@ func (d *driver) findOrCreateNic(vxnet, ip string) (*sdktypes.Nic, error) {
 		nic, err = d.findAvailableNicByIP(vxnet, ip)
 		ips = append(ips, ip)
 	}
-	if err == nil || err != errNoAvailableNic {
-		return nic, err
+	if err != nil && err != errNoAvailableNic {
+		return nil, err
 	}
 
 	// Create a network interface and attach it to the instance.
-	nics, err := d.api.CreateNics(vxnet, "", 1, ips)
-	if err != nil {
+	if err == errNoAvailableNic {
+		nics, err := d.api.CreateNics(vxnet, "", 1, ips)
+		if err != nil {
+			return nil, err
+		}
+		nic = nics[0]
+	}
+
+	if _, err := d.api.AttachNics([]string{nic.ID}, util.InstanceID, true); err != nil {
 		return nil, err
 	}
-	if _, err := d.api.AttachNics([]string{nics[0].ID}, util.InstanceID, true); err != nil {
-		return nil, err
-	}
-	return nics[0], nil
+	return nic, nil
 }
 
 func (d *driver) findAttachedIdleNic(vxnet, ip string) (*sdktypes.Nic, error) {
