@@ -166,11 +166,7 @@ func (d *driver) findRandomAvailableNic(vxnet string) (*sdktypes.Nic, error) {
 	}
 
 	rand.Seed(time.Now().UnixNano())
-	nic := nics[rand.Intn(len(nics))]
-	if _, err := d.api.AttachNics([]string{nic.ID}, util.InstanceID, true); err != nil {
-		return nil, err
-	}
-	return nic, nil
+	return nics[rand.Intn(len(nics))], nil
 }
 
 func (d *driver) findAvailableNicByIP(vxnet, ip string) (*sdktypes.Nic, error) {
