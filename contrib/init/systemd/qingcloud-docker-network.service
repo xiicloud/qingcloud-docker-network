@@ -1,0 +1,13 @@
+[Unit]
+Description=Csphere Network Plugin
+After=network.target
+
+[Service]
+EnvironmentFile=/etc/qingcloud-docker-network.env
+User=root
+ExecStart=/bin/qingcloud-docker-network
+Restart=always
+RestartSec=3s
+
+[Install]
+WantedBy=multi-user.target
