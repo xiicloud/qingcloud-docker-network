@@ -5,12 +5,12 @@
 4. 向`/etc/sysconfig/network-scripts/ifcfg-eth0`文件里写入以下内容来配置虚拟机主网卡:
   
   ```bash
-    TYPE=Ethernet
-    DEVICE=eth0
-    NAME=eth0
-    ONBOOT=yes
-    NM_CONTROLLED=no
-    BOOTPROTO=dhcp
+  TYPE=Ethernet
+  DEVICE=eth0
+  NAME=eth0
+  ONBOOT=yes
+  NM_CONTROLLED=no
+  BOOTPROTO=dhcp
   ```
 5. 执行 `curl https://get.docker.com|bash` 安装Docker
 6. 安装并启动青云Docker插件:
@@ -20,7 +20,8 @@
   ```bash
   git clone https://github.com/nicescale/qingcloud-docker-network.git /tmp/qingcloud-docker-network
   cd /tmp/qingcloud-docker-network
-  go build -o /usr/bin/qingcloud-docker-network
+  make
+  cp bin/qingcloud-docker-network /bin/
   ```
   
   或者直接下载编译好的二进制使用：[qingcloud-docker-network.gz](https://github.com/nicescale/qingcloud-docker-network/files/693076/qingcloud-docker-network.gz)
@@ -31,6 +32,20 @@
   
   ```bash
   ACCESS_KEY_ID=xxxxxxxx SECRET_KEY=xxxxxxxxxx ZONE=sh1a /usr/bin/qingcloud-docker-network
+  ```
+
+  或者基于Docker镜像运行插件：
+  
+  ```bash
+	docker run -d --restart=always --name=netplugin --net=host \
+    --cap-add NET_ADMIN \
+    -v /var/lib/docker/qingcloud-network:/var/lib/docker/qingcloud-network \
+    -v /var/run/docker/plugins:/var/run/docker/plugins \
+    -e ACCESS_KEY_ID=xxxxxxxx \
+    -e SECRET_KEY=xxxxxxxxxx \
+    -e ZONE=sh1a \
+    csphere/qingcloud-docker-network
+  
   ```
 7. 创建网络:
 

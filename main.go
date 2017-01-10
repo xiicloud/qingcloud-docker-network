@@ -19,8 +19,12 @@ import (
 )
 
 const (
-	version  = "0.1.0-alpha"
 	sockPath = "/var/run/docker/plugins/qingcloud.sock"
+)
+
+var (
+	version   = "master"
+	gitCommit = ""
 )
 
 func main() {
@@ -28,6 +32,9 @@ func main() {
 	app.Name = "qingcloud-docker-network"
 	app.Usage = "Qingcloud Docker network plugin"
 	app.Version = version
+	if gitCommit != "" {
+		app.Version += " (git: " + gitCommit + ")"
+	}
 	app.Action = Run
 	app.Author = "Shijiang Wei"
 	app.Email = "mountkin@gmail.com"
