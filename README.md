@@ -1,3 +1,13 @@
+# 青云Docker网络插件
+[![Build Status](https://travis-ci.org/nicescale/qingcloud-docker-network.svg?branch=master)](https://travis-ci.org/nicescale/qingcloud-docker-network)
+
+通过本插件在青云平台使用Docker时，可以为每个容器创建一块独立的网卡，
+让Docker直接对接青云的SDN网络，无需端口映射。
+用户可以直接为容器分配一个EIP，也可以把容器添加到负载均衡后面。
+如果用户与青云建立了VPN连接，可以直接通过桌面浏览器访问容器里的服务。
+
+用户可通过青云的防火墙按需配置每个容器的安全策略。
+
 # 使用方法
 1. 登录青云控制台，创建一个VPC网络，然后创建两个私有网络(分别命名为mgmt和user)，并将之加入VPC网络。
 2. 基于CentOS 7 64位镜像创建虚拟机，网络选择mgmt。
