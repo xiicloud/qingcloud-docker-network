@@ -8,6 +8,10 @@
 
 用户可通过青云的防火墙按需配置每个容器的安全策略。
 
+本网络插件由[希云cSphere](https://csphere.cn)团队开发和维护，欢迎试用和提出宝贵的改进意见。
+
+![csphere](misc/csphere.jpg)
+
 ## 注意事项
 1. 由于IPAM插件需要通过`--ipam-opt`参数指定vxnet，而这个参数是在Docker 1.10版本才引入的，所以1.10以下的版本目前无法使用本插件。
 
@@ -32,6 +36,7 @@
   
   ```bash
   git clone https://github.com/nicescale/qingcloud-docker-network.git /tmp/qingcloud-docker-network
+  # 国内用户可 git clone https://git.oschina.net/csphere/qingcloud-docker-network.git /tmp/qingcloud-docker-network
   cd /tmp/qingcloud-docker-network
   make
   cp bin/qingcloud-docker-network /bin/
