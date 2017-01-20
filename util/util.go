@@ -4,21 +4,14 @@ import (
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
-	"net"
-	"net/http"
 	"os"
 	"strings"
-	"time"
 
 	"github.com/vishvananda/netlink"
 )
 
-const qingcloudMetadataURL = "http://metadata.ks.qingcloud.com/"
-
 var (
 	InstanceID string
-	inspectURL string
-	httpClient = &http.Client{Timeout: time.Second * 5}
 	NlHandle   *netlink.Handle
 )
 
@@ -37,7 +30,6 @@ func Init() {
 		panic(msg)
 	}
 	InstanceID = strings.TrimSpace(string(id))
-	inspectURL = qingcloudMetadataURL + InstanceID
 
 	NlHandle, err = netlink.NewHandle()
 	if err != nil {
@@ -54,51 +46,6 @@ func ReadJSON(path string, data interface{}) error {
 	defer fp.Close()
 
 	return json.NewDecoder(fp).Decode(data)
-}
-
-type VxnetNic struct {
-	VxnetType int    `json:"vxnet_type"`
-	VxnetID   string `json:"vxnet_id"`
-	VxnetName string `json:"vxnet_name"`
-	Role      int    `json:"role"`
-	PrivateIP net.IP `json:"private_ip"`
-	NicID     string `json:"nic_id"`
-}
-
-type InstanceMetadata struct {
-	VcpusCurrent  int           `json:"vcpus_current"`
-	InstanceName  string        `json:"instance_name"`
-	VxnetsCount   int           `json:"vxnets_count"`
-	VolumeIds     []interface{} `json:"volume_ids"`
-	Vxnets        []*VxnetNic   `json:"vxnets"`
-	MemoryCurrent int           `json:"memory_current"`
-	Eip           struct {
-		EipID     string `json:"eip_id"`
-		Bandwidth int    `json:"bandwidth"`
-		EipAddr   string `json:"eip_addr"`
-	} `json:"eip"`
-	ImageID      string `json:"image_id"`
-	InstanceID   string `json:"instance_id"`
-	InstanceType string `json:"instance_type"`
-	OsFamily     string `json:"os_family"`
-	Platform     string `json:"platform"`
-}
-
-func GetInstanceMetedata() (*InstanceMetadata, error) {
-	resp, err := httpClient.Get(inspectURL)
-	if err != nil {
-		return nil, err
-	}
-	defer resp.Body.Close()
-
-	if resp.StatusCode != 200 {
-		body, _ := ioutil.ReadAll(resp.Body)
-		return nil, fmt.Errorf("failed to call qingcloud metadata API %s: %q", inspectURL, string(body))
-	}
-
-	md := &InstanceMetadata{}
-	err = json.NewDecoder(resp.Body).Decode(md)
-	return md, err
 }
 
 func LinkList() (map[string]netlink.Link, error) {

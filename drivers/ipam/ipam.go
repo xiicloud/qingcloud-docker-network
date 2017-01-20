@@ -117,7 +117,7 @@ func (d *driver) findOrCreateNic(vxnet, ip string) (*sdktypes.Nic, error) {
 }
 
 func (d *driver) findAttachedIdleNic(vxnet, ip string) (*sdktypes.Nic, error) {
-	md, err := util.GetInstanceMetedata()
+	nics, err := d.api.DescribeNics(qcsdk.Params{"vxnets": vxnet, "instances": util.InstanceID})
 	if err != nil {
 		return nil, err
 	}
@@ -127,15 +127,15 @@ func (d *driver) findAttachedIdleNic(vxnet, ip string) (*sdktypes.Nic, error) {
 		return nil, err
 	}
 
-	var preferedNic *util.VxnetNic
+	var preferedNic *sdktypes.Nic
 	d.nicLock.Lock()
 	defer d.nicLock.Unlock()
-	for _, nic := range md.Vxnets {
+	for _, nic := range nics {
 		if nic.Role == 1 {
 			// Role == 1 means the interface is used by the VM
 			continue
 		}
-		if nic.VxnetID != vxnet || m[nic.NicID] == nil {
+		if m[nic.ID] == nil {
 			continue
 		}
 		if ip != "" && nic.PrivateIP.String() != ip {
@@ -149,10 +149,7 @@ func (d *driver) findAttachedIdleNic(vxnet, ip string) (*sdktypes.Nic, error) {
 	if preferedNic == nil {
 		return nil, errNoAvailableNic
 	}
-	return &sdktypes.Nic{
-		ID:        preferedNic.NicID,
-		PrivateIP: preferedNic.PrivateIP,
-	}, nil
+	return preferedNic, nil
 }
 
 func (d *driver) findRandomAvailableNic(vxnet string) (*sdktypes.Nic, error) {

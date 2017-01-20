@@ -6,7 +6,7 @@ import (
 
 func (api *Api) DescribeNics(filters ...Params) ([]*types.Nic, error) {
 	req := api.NewRequest("DescribeNics")
-	mergeFilterParams(req, []string{"nics", "vxnets", "status"}, filters)
+	mergeFilterParams(req, []string{"nics", "vxnets", "status", "instances"}, filters)
 
 	ret := types.DescribeNicsResponse{}
 	err := api.SendRequest(req, &ret)
