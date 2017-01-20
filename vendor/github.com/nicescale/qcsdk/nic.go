@@ -1,7 +1,7 @@
 package qcsdk
 
 import (
-	"github.com/nicescale/qingcloud-docker-network/qcsdk/types"
+	"github.com/nicescale/qcsdk/types"
 )
 
 func (api *Api) DescribeNics(filters ...Params) ([]*types.Nic, error) {

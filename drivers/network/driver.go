@@ -8,7 +8,7 @@ import (
 
 	"github.com/Sirupsen/logrus"
 	"github.com/docker/go-plugins-helpers/network"
-	"github.com/nicescale/qingcloud-docker-network/qcsdk"
+	"github.com/nicescale/qcsdk"
 	"github.com/nicescale/qingcloud-docker-network/util"
 )
 

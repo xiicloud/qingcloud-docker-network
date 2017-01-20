@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"reflect"
 
-	"github.com/nicescale/qingcloud-docker-network/qcsdk/types"
+	"github.com/nicescale/qcsdk/types"
 )
 
 var (

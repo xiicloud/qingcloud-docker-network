@@ -33,6 +33,18 @@
 			"revisionTime": "2017-01-06T05:13:31Z"
 		},
 		{
+			"checksumSHA1": "KXzZstFy8dDE68qGJRvOq9jfAzc=",
+			"path": "github.com/nicescale/qcsdk",
+			"revision": "ddcd8a0bab71ccbb138c66685d833d1aa88b1403",
+			"revisionTime": "2017-01-20T08:45:50Z"
+		},
+		{
+			"checksumSHA1": "kq+F/k9kNtaRNrER1hu4Gfunl5k=",
+			"path": "github.com/nicescale/qcsdk/types",
+			"revision": "ddcd8a0bab71ccbb138c66685d833d1aa88b1403",
+			"revisionTime": "2017-01-20T08:45:50Z"
+		},
+		{
 			"checksumSHA1": "zWcD+hiuLdxgBd4oRQnAsdNBXSc=",
 			"path": "github.com/urfave/cli",
 			"revision": "d53eb991652b1d438abdd34ce4bfa3ef1539108e",

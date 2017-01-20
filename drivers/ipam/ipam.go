@@ -8,8 +8,8 @@ import (
 
 	"github.com/Sirupsen/logrus"
 	"github.com/docker/go-plugins-helpers/ipam"
-	"github.com/nicescale/qingcloud-docker-network/qcsdk"
-	sdktypes "github.com/nicescale/qingcloud-docker-network/qcsdk/types"
+	"github.com/nicescale/qcsdk"
+	sdktypes "github.com/nicescale/qcsdk/types"
 	"github.com/nicescale/qingcloud-docker-network/util"
 )
 

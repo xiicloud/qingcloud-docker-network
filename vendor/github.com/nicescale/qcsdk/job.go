@@ -5,7 +5,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/nicescale/qingcloud-docker-network/qcsdk/types"
+	"github.com/nicescale/qcsdk/types"
 )
 
 func (api *Api) DescribeJobs(filters ...Params) ([]*types.Job, error) {

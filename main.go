@@ -11,9 +11,9 @@ import (
 	ipamapi "github.com/docker/go-plugins-helpers/ipam"
 	netapi "github.com/docker/go-plugins-helpers/network"
 	"github.com/docker/go-plugins-helpers/sdk"
+	"github.com/nicescale/qcsdk"
 	"github.com/nicescale/qingcloud-docker-network/drivers/ipam"
 	"github.com/nicescale/qingcloud-docker-network/drivers/network"
-	"github.com/nicescale/qingcloud-docker-network/qcsdk"
 	"github.com/nicescale/qingcloud-docker-network/util"
 	"github.com/urfave/cli"
 )
